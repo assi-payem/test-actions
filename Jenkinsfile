@@ -37,7 +37,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy in Parallel') {
+        stage('Parallel build') {
             steps {
                 script {
                     parallel parallelStagesMap
