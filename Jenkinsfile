@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     current_stage = env.STAGE_NAME
-                    SERVICES = gitServicesDirs().split(',')
+                    SERVICES = gitChangedDirs().split(',')
                     println SERVICES
                     parallelStagesMap = SERVICES.collectEntries {
                         ["${it}" : generateStage(it)]
