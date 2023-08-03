@@ -32,9 +32,9 @@ pipeline {
                     // def changedFolders = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
                     // echo "Changed folders: ${changedFolders}"
                     // .split(',')
-                    GIT_CHANGES = gitChangedDirs()
-                    // SERVICES = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
-                    if (GIT_CHANGES.toString() == "None") {
+                    // GIT_CHANGES = gitChangedDirs()
+                    GIT_CHANGES = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
+                    if (GIT_CHANGES.toString() == "") {
                         println("myVar is empty")
                     } else {
                         println("myVar is not empty")
