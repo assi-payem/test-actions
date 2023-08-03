@@ -32,25 +32,27 @@ pipeline {
                     // def changedFolders = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
                     // echo "Changed folders: ${changedFolders}"
                     // .split(',')
-                    // GIT_CHANGES = gitChangedDirs()
-                    def baseServices = "infra,scripts"
-                    GIT_CHANGES = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
-                    if (GIT_CHANGES.toString() == "") {
-                        building = false
-                        println("myVar is empty")
-                    } else {
-                        building = true
-                        SERVICES = GIT_CHANGES.split(',')
-                        for (item in SERVICES) {
-                            println item
-                            if (baseServices.split(',').contains(item)) {
-                                SERVICES.remove(item)
-                                build_all = true
-                            }
-                        }
-                        parallelStagesMap = SERVICES.collectEntries {
-                            ["${it}" : generateStage(it)]
-                        }
+                    building = false
+                    GIT_CHANGES = gitChangedDirs()
+                    println GIT_CHANGES.toString()
+                    // def baseServices = "infra,scripts"
+                    // GIT_CHANGES = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
+                    // if (GIT_CHANGES.toString() == "") {
+                    //     building = false
+                    //     println("myVar is empty")
+                    // } else {
+                    //     building = true
+                    //     SERVICES = GIT_CHANGES.split(',')
+                    //     for (item in SERVICES) {
+                    //         println item
+                    //         if (baseServices.split(',').contains(item)) {
+                    //             SERVICES.remove(item)
+                    //             build_all = true
+                    //         }
+                    //     }
+                    //     parallelStagesMap = SERVICES.collectEntries {
+                    //         ["${it}" : generateStage(it)]
+                    //     }
                     }
                 }
             }
