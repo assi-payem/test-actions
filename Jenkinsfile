@@ -53,7 +53,7 @@ pipeline {
                     //     parallelStagesMap = SERVICES.collectEntries {
                     //         ["${it}" : generateStage(it)]
                     //     }
-                    }
+                    // }
                 }
             }
         }
