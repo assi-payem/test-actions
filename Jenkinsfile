@@ -6,7 +6,7 @@ def generateStage(job) {
             current_stage = env.STAGE_NAME
             script {
                 sh """cd ${job}
-                docker build . -t ${job}
+                docker build . -t ${job} || echo "No Dockerfile found"
                 """
             }
         }
@@ -31,7 +31,7 @@ pipeline {
                     current_stage = env.STAGE_NAME
                     def changedFolders = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
                     echo "Changed folders: ${changedFolders}"
-                    SERVICES = gitChangedDirs().split(',')
+                    SERVICES = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim().split(',')
                     println SERVICES
                     parallelStagesMap = SERVICES.collectEntries {
                         ["${it}" : generateStage(it)]
