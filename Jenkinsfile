@@ -44,14 +44,10 @@ pipeline {
                         for (item in SERVICES) {
                             println item
                             if (baseServices.split(',').contains(item)) {
-                                println "found"
-                            } else {
-                                println "not"
+                                SERVICES.remove(item)
+                                build_all = true
                             }
                         }
-                        println("myVar is not empty")
-                        println GIT_CHANGES.split(',')
-                        SERVICES = GIT_CHANGES.split(',')
                         parallelStagesMap = SERVICES.collectEntries {
                             ["${it}" : generateStage(it)]
                         }
