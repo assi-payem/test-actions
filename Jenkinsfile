@@ -31,7 +31,8 @@ pipeline {
                     current_stage = env.STAGE_NAME
                     // def changedFolders = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
                     // echo "Changed folders: ${changedFolders}"
-                    SERVICES = gitChangedDirs().split(',')
+                    // .split(',')
+                    SERVICES = gitChangedDirs()
                     if (SERVICES.length == 0) {
                         println("myVar is empty")
                     } else {
