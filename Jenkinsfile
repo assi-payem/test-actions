@@ -29,10 +29,15 @@ pipeline {
             steps {
                 script {
                     current_stage = env.STAGE_NAME
-                    def changedFolders = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
-                    echo "Changed folders: ${changedFolders}"
-                    SERVICES = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim().split(',')
-                    println SERVICES
+                    // def changedFolders = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
+                    // echo "Changed folders: ${changedFolders}"
+                    SERVICES = gitChangedDirs().split(',')
+                    if (SERVICES.isEmpty()) {
+                        println("myVar is empty")
+                    } else {
+                        println("myVar is not empty")
+                        println SERVICES.toString()
+                    }
                     parallelStagesMap = SERVICES.collectEntries {
                         ["${it}" : generateStage(it)]
                     }
