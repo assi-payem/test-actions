@@ -32,13 +32,14 @@ pipeline {
                     // def changedFolders = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
                     // echo "Changed folders: ${changedFolders}"
                     // .split(',')
-                    // SERVICES = gitChangedDirs()
-                    SERVICES = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
-                    if (SERVICES.length == 0) {
+                    GIT_CHANGES = gitChangedDirs()
+                    // SERVICES = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
+                    if (GIT_CHANGES.toString() == "None") {
                         println("myVar is empty")
                     } else {
                         println("myVar is not empty")
-                        println SERVICES.toString()
+                        println GIT_CHANGES.split(',')
+                        SERVICES = GIT_CHANGES.split(',')
                     }
                     parallelStagesMap = SERVICES.collectEntries {
                         ["${it}" : generateStage(it)]
