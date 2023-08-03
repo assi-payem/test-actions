@@ -29,6 +29,7 @@ pipeline {
             steps {
                 script {
                     current_stage = env.STAGE_NAME
+                    sh "git diff --name-only origin/master"
                     SERVICES = gitChangedDirs().split(',')
                     println SERVICES
                     parallelStagesMap = SERVICES.collectEntries {
