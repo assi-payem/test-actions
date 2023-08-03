@@ -29,7 +29,8 @@ pipeline {
             steps {
                 script {
                     current_stage = env.STAGE_NAME
-                    sh "git diff --name-only origin/master"
+                    def changedFolders = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
+                    echo "Changed folders: ${changedFolders}"
                     SERVICES = gitChangedDirs().split(',')
                     println SERVICES
                     parallelStagesMap = SERVICES.collectEntries {
