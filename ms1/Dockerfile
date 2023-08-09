@@ -2,4 +2,5 @@ FROM python:3.9
 
 WORKDIR /code
 
-RUN ls -la
+RUN ls -la \
+    && echo "Hi"

@@ -24,47 +24,69 @@ pipeline {
     environment {
         SERVICES = ""
     }
+    parameters {
+        booleanParam(name: 'FORCE_BUILD', defaultValue: false, description: 'Force Build all Images?')
+    }
     stages {
-        stage('Set Parallel') {
+        stage('test publish') {
             steps {
                 script {
-                    current_stage = env.STAGE_NAME
-                    // def changedFolders = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
-                    // echo "Changed folders: ${changedFolders}"
-                    // .split(',')
-                    building = false
-                    GIT_CHANGES = gitChangedDirs()
-                    println GIT_CHANGES.toString()
-                    // def baseServices = "infra,scripts"
-                    // GIT_CHANGES = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
-                    // if (GIT_CHANGES.toString() == "") {
-                    //     building = false
-                    //     println("myVar is empty")
-                    // } else {
-                    //     building = true
-                    //     SERVICES = GIT_CHANGES.split(',')
-                    //     for (item in SERVICES) {
-                    //         println item
-                    //         if (baseServices.split(',').contains(item)) {
-                    //             SERVICES.remove(item)
-                    //             build_all = true
-                    //         }
-                    //     }
-                    //     parallelStagesMap = SERVICES.collectEntries {
-                    //         ["${it}" : generateStage(it)]
-                    //     }
-                    // }
+                    gitPublishDraft3("test-actions")
                 }
             }
         }
-        stage('Parallel build') {
-            when { expression { building == true } }
-            steps {
-                script {
-                    parallel parallelStagesMap
-                }
-            }
-        }
+        // stage('Set Parallel') {
+        //     steps {
+        //         script {
+        //             current_stage = env.STAGE_NAME
+        //             // def changedFolders = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
+        //             // echo "Changed folders: ${changedFolders}"
+        //             // .split(',')
+        //             building = false
+        //             if(params.FORCE_BUILD) {
+        //                 SERVICES = gitChangedDirs("force")
+        //             } else {
+        //                 SERVICES = gitChangedDirs("change")
+        //             }
+        //             if (GIT_CHANGES.toString() == "") {
+        //                 building = false
+        //             } else {
+        //                 building = true
+        //                 parallelStagesMap = SERVICES.collectEntries {
+        //                     ["${it}" : generateStage(it)]
+        //                 }
+        //             }
+        //             // println GIT_CHANGES.toString()
+        //             // def baseServices = "infra,scripts"
+        //             // GIT_CHANGES = sh(script: 'git diff --name-only ${GIT_COMMIT} ${GIT_PREVIOUS_COMMIT} | awk -F / \'NF{NF--};1\' | sort -u', returnStdout: true).trim()
+        //             // if (GIT_CHANGES.toString() == "") {
+        //             //     building = false
+        //             //     println("myVar is empty")
+        //             // } else {
+        //             //     building = true
+        //             //     SERVICES = GIT_CHANGES.split(',')
+        //             //     for (item in SERVICES) {
+        //             //         println item
+        //             //         if (baseServices.split(',').contains(item)) {
+        //             //             SERVICES.remove(item)
+        //             //             build_all = true
+        //             //         }
+        //             //     }
+        //             //     parallelStagesMap = SERVICES.collectEntries {
+        //             //         ["${it}" : generateStage(it)]
+        //             //     }
+        //             // }
+        //         }
+        //     }
+        // }
+        // stage('Parallel build') {
+        //     when { expression { building == true } }
+        //     steps {
+        //         script {
+        //             parallel parallelStagesMap
+        //         }
+        //     }
+        // }
     }
     post {
         success {
